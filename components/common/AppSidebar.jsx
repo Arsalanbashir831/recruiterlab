@@ -1,0 +1,76 @@
+"use client";
+
+import * as React from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { NavUser } from "./NavUser";
+import { usePathname } from "next/navigation";
+
+const data = {
+  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+  navMain: [
+    {
+      title: "Home",
+      url: "#",
+      items: [
+        { title: "Create Post", url: "/" },
+        { title: "Your Posts", url: "/your-post" },
+      ],
+    },
+  ],
+};
+
+export function AppSidebar({ ...props }) {
+  const currentPath = usePathname(); // Get the full current path
+  console.log("Current Path:", currentPath);
+
+  return (
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <h1 className="text-2xl font-bold">Recruiter Labs</h1>
+      </SidebarHeader>
+      <SidebarContent>
+        {data.navMain.map((item) => (
+          <SidebarGroup key={item.title}>
+            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {item.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={currentPath === item.url} // Check if the current path matches the item URL
+                    >
+                      <a href={item.url}>{item.title}</a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+      <SidebarRail />
+      <SidebarFooter>
+        <NavUser
+          user={{
+            name: "shadcn",
+            email: "m@example.com",
+            avatar: "/vercel.jpg",
+          }}
+        />
+      </SidebarFooter>
+    </Sidebar>
+  );
+}

@@ -2,20 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* LinkedIn Light Theme Colors */
+    --background: 220 15% 97%; /* Light gray background */
+    --foreground: 220 15% 20%; /* Dark text */
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 220 15% 20%; /* Text for cards */
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 20%;
+    --primary: 210 100% 40%; /* LinkedIn Blue */
+    --primary-foreground: 0 0% 100%; /* White text on blue */
+    --secondary: 220 20% 85%; /* Light gray for secondary elements */
+    --secondary-foreground: 220 15% 20%;
+    --muted: 220 20% 85%; /* Muted light gray */
+    --muted-foreground: 220 10% 50%; /* Muted text */
+    --accent: 210 100% 40%; /* LinkedIn Blue accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%; /* Red for errors */
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 85%; /* Light gray border */
+    --input: 220 20% 90%; /* Light gray input fields */
+    --ring: 210 100% 40%; /* Focus ring in blue */
+    --chart-1: 210 70% 50%; /* Blue for charts */
+    --chart-2: 220 60% 45%; /* Lighter blue */
+    --chart-3: 240 50% 40%; /* Neutral tone */
+    --chart-4: 30 80% 60%; /* Orange for contrast */
+    --chart-5: 360 75% 50%; /* Red for contrast */
+    --radius: 0.4rem; /* Slightly smaller corner radius */
+    --sidebar-background: 220 15% 97%; /* Light gray sidebar */
+    --sidebar-foreground: 220 15% 20%; /* Dark text */
+    --sidebar-primary: 210 100% 40%; /* Blue for primary elements */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 100% 40%; /* Accent blue */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 15% 85%; /* Light gray border */
+    --sidebar-ring: 210 100% 40%; /* Blue focus ring */
+  }
+  
+  .dark {
+    /* LinkedIn Dark Theme Colors */
+    --background: 220 15% 10%; /* Dark background */
+    --foreground: 0 0% 95%; /* Light text */
+    --card: 220 15% 15%; /* Darker cards */
+    --card-foreground: 0 0% 95%; /* Light text for cards */
+    --popover: 220 15% 15%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 210 100% 50%; /* Bright LinkedIn Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 20%; /* Dark secondary */
+    --secondary-foreground: 0 0% 95%;
+    --muted: 220 15% 20%; /* Muted dark */
+    --muted-foreground: 0 0% 70%;
+    --accent: 210 100% 50%; /* Bright blue accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%; /* Red for errors */
+    --destructive-foreground: 0 0% 95%;
+    --border: 220 15% 20%; /* Dark gray border */
+    --input: 220 15% 20%; /* Dark input fields */
+    --ring: 210 100% 50%; /* Blue focus ring */
+    --chart-1: 210 80% 60%;
+    --chart-2: 220 70% 50%;
+    --chart-3: 30 80% 60%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 360 75% 50%;
+    --radius: 0.4rem;
+    --sidebar-background: 220 15% 10%; /* Dark sidebar */
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 210 100% 50%; /* Bright blue */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 100% 50%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 15% 20%; /* Darker borders */
+    --sidebar-ring: 210 100% 50%; /* Bright blue focus ring */
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
