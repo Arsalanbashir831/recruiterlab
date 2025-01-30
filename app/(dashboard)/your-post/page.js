@@ -1,74 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
-import { PostDetailsDialog } from "@/components/your-post/PostDialogueComponent";
-import { PostCard } from "@/components/your-post/PostCards";
+import { usePosts } from "@/contexts/PostsContext";
+import { PostCard } from "@/components/your-post/PostCard";
 
+export default function YourPosts() {
+	const { posts } = usePosts();
 
-export default function PostList() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState(null);
-
-  const posts = [
-    {
-      id: 1,
-      image: "/testImg.jpg",
-      title: "Frontend Developer",
-      description: "This role involves building interactive user interfaces.",
-    },
-    {
-      id: 2,
-      image: "/testImg.jpg",
-      title: "Backend Engineer",
-      description: "Develop robust server-side logic and database schemas.",
-    },
-    {
-        id: 3,
-        image: "/testImg.jpg",
-        title: "Frontend Developer",
-        description: "This role involves building interactive user interfaces.",
-      },
-      {
-        id: 4,
-        image: "/testImg.jpg",
-        title: "Backend Engineer",
-        description: "Develop robust server-side logic and database schemas.",
-      },
-  ];
-
-  const handlePostClick = (post) => {
-    setSelectedPost(post);
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
-
-  return (
-    <div className="m-5 ">
-      {/* Render Post Cards */}
-      <div className="flex justify-center flex-wrap gap-4">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            id={post.id}
-            image={post.image}
-            title={post.title}
-            description={post.description}
-            onClick={() => handlePostClick(post)}
-          />
-        ))}
-      </div>
-
-      {/* Render Dialog */}
-      {selectedPost && (
-        <PostDetailsDialog
-          isOpen={isDialogOpen}
-          onClose={handleCloseDialog}
-          post={selectedPost}
-        />
-      )}
-    </div>
-  );
+	return (
+		<div className='min-h-screen bg-gray-100 p-6'>
+			<div className='max-w-7xl mx-auto'>
+				<h1 className='text-4xl font-bold mb-8'>My Posts</h1>
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+					{posts.map((post) => (
+						<PostCard key={post.id} post={post} />
+					))}
+				</div>
+			</div>
+		</div>
+	);
 }
