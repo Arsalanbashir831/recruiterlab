@@ -46,7 +46,7 @@ export default function PostPage() {
 				},
 				cta: {
 					id: "cta",
-					type: "cta",
+					type: "CTA",
 					content:
 						currentPost.sections?.cta?.content || "Call to action goes here...",
 					style: currentPost.sections?.cta?.style || "insightful",

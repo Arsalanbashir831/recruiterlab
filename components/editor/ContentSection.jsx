@@ -2,8 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Pencil } from "lucide-react";
+import { Loader2, LoaderPinwheelIcon, Pencil, Recycle } from "lucide-react";
 import SelectStyleButton from "../common/SelectStyleButton";
+import { Tooltip, TooltipTrigger } from "../ui/tooltip";
+import { TooltipContent } from "@radix-ui/react-tooltip";
+
 
 // Optional: Map style IDs to user-friendly names
 const styleLabels = {
@@ -46,8 +49,9 @@ export function ContentSection({
 						style={section.style}
 						onSelectStyle={(newStyle) => onRegenerate(section.id, newStyle)}
 					/>
-
-					<Button
+<Tooltip content="Regenerate content" side="top">
+<TooltipTrigger asChild>
+<Button
 						variant='outline'
 						size='sm'
 						onClick={() =>
@@ -57,6 +61,28 @@ export function ContentSection({
 						className='border-2'>
 						{section.isEditing ? "Save" : <Pencil className='h-4 w-4' />}
 					</Button>
+</TooltipTrigger>
+ <TooltipContent className="bg-gray-800 text-white text-sm font-medium py-2 px-3 rounded-md shadow-lg opacity-90 transition-all duration-200 ease-in-out">
+        <p>Edit</p>
+      </TooltipContent>
+</Tooltip>
+
+					
+					<Tooltip content="Regenerate content" side="top">
+      <TooltipTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={disabled}
+          className="border-2  focus:ring-2 focus:ring-blue-500 transition-all duration-200 ease-in-out rounded-md px-3 py-2"
+        >
+          <LoaderPinwheelIcon className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent className="bg-gray-800 text-white text-sm font-medium py-2 px-3 rounded-md shadow-lg opacity-90 transition-all duration-200 ease-in-out">
+        <p>Regenerate</p>
+      </TooltipContent>
+    </Tooltip>
 				</div>
 			</div>
 
