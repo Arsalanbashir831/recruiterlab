@@ -33,8 +33,8 @@ const [userInfo , setUserInfo] = useState(null)
 
           const refreshResponse = await apiCaller(Authentication.refreshToken, "POST", { refresh: refreshToken });
           const { access } = refreshResponse;
-
           localStorage.setItem("accessToken", access);
+          window.location.reload()
           setIsLoggedIn(true);
         } catch (refreshError) {
           localStorage.removeItem("accessToken");
