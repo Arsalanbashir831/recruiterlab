@@ -13,25 +13,68 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import apiCaller from "@/helper/apiCaller";
+import { Authentication } from "@/routes/routes";
+import { useToast } from "@/hooks/use-toast";
+
+
 
 export function SignupForm({ className, ...props }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-const router = useRouter()
+  const [username, setUsername] = useState(""); // State for username
+  const [email, setEmail] = useState(""); // State for email
+  const [password, setPassword] = useState(""); // State for password
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
+  const [loading, setLoading] = useState(false); // Loading state
+  const router = useRouter();
+  const { toast } = useToast(); // Initialize toast
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-
+    setLoading(true);
+    localStorage.clear();
     // Check if passwords match
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast({
+        title: "Error",
+        description: "Passwords do not match!",
+        variant: "destructive",
+      });
       setLoading(false);
       return;
     }
-router.push("/auth/verification")
+
+    try {
+      // Create FormData object
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      // formData.append("confirmPassword", confirmPassword);
+
+      // Call Signup API
+      await apiCaller(Authentication.register, "POST", formData, "multipart",false);
+
+      // Success message
+      toast({
+        title: "Success",
+        description: "Signup successful! Redirecting...",
+      });
+
    
+      setTimeout(() => router.push(`/auth/verification?type=new&email=${email}`), 1500);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Signup failed. Please try again.";
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,12 +83,25 @@ router.push("/auth/verification")
         <CardHeader>
           <CardTitle className="text-2xl">Signup</CardTitle>
           <CardDescription>
-            Enter your email and password below to create an account.
+            Enter your details below to create an account.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
+              {/* Username Field */}
+              <div className="grid gap-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+
               {/* Email Field */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -54,7 +110,7 @@ router.push("/auth/verification")
                   type="email"
                   placeholder="m@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)} // Update email state
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -66,7 +122,7 @@ router.push("/auth/verification")
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)} // Update password state
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
@@ -78,7 +134,7 @@ router.push("/auth/verification")
                   id="confirmpassword"
                   type="password"
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)} // Update confirmPassword state
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
               </div>
@@ -88,6 +144,8 @@ router.push("/auth/verification")
                 {loading ? "Signing up..." : "Signup"}
               </Button>
             </div>
+
+            {/* Login Link */}
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <a href="/auth" className="underline underline-offset-4">

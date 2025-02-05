@@ -5,31 +5,55 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import apiCaller from "@/helper/apiCaller";
+import { useToast } from "@/components/ui/use-toast"; // Import ShadCN toast
 
-const Page = () => {
+const ResetPasswordPage = () => {
   const [newPassword, setNewPassword] = useState(""); // State for new password
   const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
   const [loading, setLoading] = useState(false); // Loading state for submit
-const router = useRouter()
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast(); // Initialize toast
+
+  const otp = searchParams.get("otp");
+  const email = searchParams.get("email");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setLoading(true);
+    setLoading(true); // Show loading state
 
-    // Validate that the passwords match
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast({ title: "Error", description: "Passwords do not match!", variant: "destructive" });
       setLoading(false);
       return;
     }
-router.push('/auth')
 
-    // Simulate API call to reset password
-  
+    try {
+      await apiCaller("/users/reset-password/", "POST", {
+        otp,
+        email,
+        new_password: newPassword,
+      });
+
+      toast({ title: "Success", description: "Password reset successful! Redirecting..." });
+
+      // Redirect to login page after a short delay
+      setTimeout(() => router.push("/auth"), 1500);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to reset password.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false); // Hide loading state
+    }
   };
 
   return (
-    <div className="flex items-center justify-center p-6">
+    <div className="flex items-center justify-center min-h-screen p-6">
       <Card className="w-full max-w-md shadow-md">
         <CardHeader>
           <CardTitle className="text-center text-lg font-semibold">Reset Password</CardTitle>
@@ -46,7 +70,7 @@ router.push('/auth')
                 type="password"
                 placeholder="Enter new password"
                 value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)} // Update new password state
+                onChange={(e) => setNewPassword(e.target.value)}
                 required
                 className="mt-2"
               />
@@ -62,7 +86,7 @@ router.push('/auth')
                 type="password"
                 placeholder="Confirm new password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)} // Update confirm password state
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="mt-2"
               />
@@ -81,4 +105,4 @@ router.push('/auth')
   );
 };
 
-export default Page;
+export default ResetPasswordPage;

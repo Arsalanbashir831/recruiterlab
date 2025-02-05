@@ -1,3 +1,4 @@
+'use client'
 import { AppSidebar } from "@/components/common/AppSidebar";
 
 import {
@@ -6,16 +7,18 @@ import {
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { PostsProvider } from "@/contexts/PostsContext";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { RecoilRoot } from "recoil";
 
 export default function Layout({ children }) {
 	return (
+		<AuthProvider>
+		<RecoilRoot>
 		<SidebarProvider>
 			<PostsProvider>
-			<TooltipProvider>
-
-			
+			<TooltipProvider>			
 				<Toaster />
 				<AppSidebar />
 				<SidebarInset>
@@ -24,5 +27,7 @@ export default function Layout({ children }) {
 				</TooltipProvider>
 			</PostsProvider>
 		</SidebarProvider>
+		</RecoilRoot>
+		</AuthProvider>
 	);
 }
