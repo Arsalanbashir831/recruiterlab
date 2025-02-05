@@ -9,16 +9,18 @@ import {
 	SelectValue,
 } from "../ui/select";
 
-export default function SelectStyleButton({ style, onSelectStyle }) {
+export default function SelectStyleButton({ style, onSelectStyle, styleOptions }) {
 	return (
 		<Select value={style} onValueChange={onSelectStyle}>
 			<SelectTrigger className='w-[200px]'>
-				<SelectValue placeholder='Select Style' />
+				<SelectValue>{styleOptions?.[style] || "Select Style"}</SelectValue>
 			</SelectTrigger>
 			<SelectContent>
-				<SelectItem value='insightful'>Insightful Take</SelectItem>
-				<SelectItem value='numbered'>Numbered List</SelectItem>
-				<SelectItem value='personal'>Personal Experience</SelectItem>
+				{Object.entries(styleOptions || {}).map(([value, label]) => (
+					<SelectItem key={value} value={value}>
+						{label}
+					</SelectItem>
+				))}
 			</SelectContent>
 		</Select>
 	);

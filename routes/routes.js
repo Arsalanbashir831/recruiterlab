@@ -13,12 +13,17 @@ export const Authentication = {
 
 export const User = {
     getUserById: (userId) => `/users/${userId}`,
+    loggedInUserInfo :'/users/userInfo'
 };
 
 export const Post = {
-    createPost: '/posts/create',
+    createPost: '/posts/create/',
     getPost: '/posts',
-    getPostById: (postId) => `/posts/${postId}`,
+    updatePost: (postId) => `/posts/${postId}/update/`,
+    deletePost: (postId) => `/posts/${postId}/delete/`,
+    getPostById: (postId) => `/posts/${postId}/`,
     regeneratePostSection: (postId) => `/posts/${postId}/regenerate-content/`,
+    generateAIContent:(postId)=>`/posts/${postId}/generate-ai-content/`,
     chatPrompt: (postId) => `/posts/${postId}/chat/`,
+    getPrompts:(postId)=>`/posts/${postId}/prompts/`
 };

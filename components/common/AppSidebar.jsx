@@ -17,6 +17,7 @@ import {
 import { NavUser } from "./NavUser";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { AuthContext } from "@/contexts/AuthContext";
 
 const data = {
 	versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
@@ -34,6 +35,8 @@ const data = {
 
 export function AppSidebar({ ...props }) {
 	const currentPath = usePathname();
+const {userInfo} = React.useContext(AuthContext)
+console.log(userInfo);
 
 	return (
 		<Sidebar {...props}>
@@ -65,8 +68,8 @@ export function AppSidebar({ ...props }) {
 			<SidebarFooter>
 				<NavUser
 					user={{
-						name: "shadcn",
-						email: "m@example.com",
+						name: userInfo?.username,
+						email: userInfo?.email,
 						avatar: "/vercel.jpg",
 					}}
 				/>

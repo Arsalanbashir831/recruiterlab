@@ -12,11 +12,13 @@ export function ChatMessages({ messages }) {
 			scrollRef.current.scrollIntoView({ behavior: "smooth" });
 		}
 	}, [messages]);
+	
+	
 
 	return (
 		<ScrollArea className='h-[calc(100vh-8rem)]'>
 			<div className='flex flex-col gap-4 p-4'>
-				{messages.map((message, i) => (
+				{messages?.map((message, i) => (
 					<ChatBubble
 						key={i}
 						message={message}

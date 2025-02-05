@@ -1,4 +1,7 @@
 export function ChatBubble({ message, isAI }) {
+	
+	console.log(message);
+	
 	return (
 		<div className='flex flex-col gap-2'>
 			{message.role === "user" && message.content === "leadership" && (
@@ -23,7 +26,7 @@ export function ChatBubble({ message, isAI }) {
 					className={`relative rounded-xl p-4 text-sm ${
 						isAI ? "bg-white border shadow-sm" : "bg-[#F8F9FC] border"
 					}`}>
-					<div className='max-w-[240px] break-words'>{message.content}</div>
+					<div className='max-w-[240px] break-words'>{message}</div>
 				</div>
 
 				{!isAI && (

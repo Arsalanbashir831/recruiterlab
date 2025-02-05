@@ -1,11 +1,8 @@
 "use client"
 
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
   LogOut,
+  ChevronsUpDown,
   Sparkles,
 } from "lucide-react"
 
@@ -29,11 +26,19 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation";
 
-export function NavUser({
-  user,
-}) {
-  const { isMobile } = useSidebar()
+export function NavUser({ user }) {
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  // Handle user logout
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user"); // Remove any stored user data
+    router.push("/auth"); // Redirect to login page
+  };
 
   return (
     <SidebarMenu>
@@ -80,18 +85,10 @@ export function NavUser({
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            {/* <DropdownMenuSeparator /> */}
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-            
-            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut />
-             <a href="/auth">Log out</a> 
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

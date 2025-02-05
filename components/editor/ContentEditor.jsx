@@ -17,9 +17,12 @@ export function ContentEditor({
 	onContentChange,
 	onSave,
 	disabled,
+	onTitleChange, // Add this prop to update the title in the parent component
 }) {
 	const [activeTab, setActiveTab] = useState("content");
 	const { toast } = useToast();
+	const [title, setTitle] = useState(post.title); // Local state for title
+	const [isEditingTitle, setIsEditingTitle] = useState(false);
 
 	const handleCopy = () => {
 		const content = formatContent(post);
@@ -28,6 +31,24 @@ export function ContentEditor({
 			title: "Content copied to clipboard",
 			description: "You can now paste it anywhere",
 		});
+	};
+
+	// Handle title input change
+	const handleTitleChange = (e) => {
+		setTitle(e.target.value);
+	};
+
+	// Save title when pressing Enter or clicking outside
+	const handleTitleSave = () => {
+		setIsEditingTitle(false);
+		onTitleChange(title); // Update title in parent component
+	};
+
+	// Handle keypress (save on Enter)
+	const handleKeyPress = (e) => {
+		if (e.key === "Enter") {
+			handleTitleSave();
+		}
 	};
 
 	return (
@@ -67,15 +88,25 @@ export function ContentEditor({
 				<TabsContent
 					value='content'
 					className='flex-1 min-h-0 flex flex-col overflow-hidden data-[state=inactive]:hidden'>
-					{/* Title Section: Moved inside content tab */}
+					{/* Title Section (Now Editable) */}
 					<div className='border-b p-4'>
-						<input
-							type='text'
-							value={post.title}
-							placeholder='Enter title...'
-							className='w-full text-xl font-semibold outline-none bg-transparent'
-							readOnly
-						/>
+						{isEditingTitle ? (
+							<input
+								type='text'
+								value={title}
+								onChange={handleTitleChange}
+								onBlur={handleTitleSave} // Save when clicking outside
+								onKeyDown={handleKeyPress} // Save on Enter key
+								autoFocus
+								className='w-full text-xl font-semibold outline-none bg-transparent border border-gray-300 rounded-md px-2 py-1 focus:ring-2 focus:ring-primary'
+							/>
+						) : (
+							<h2
+								onClick={() => setIsEditingTitle(true)}
+								className='w-full text-xl font-semibold outline-none bg-transparent cursor-pointer'>
+								{title || "Untitled"}
+							</h2>
+						)}
 					</div>
 
 					{/* Scrollable area */}
@@ -100,7 +131,6 @@ export function ContentEditor({
 				<TabsContent
 					value='preview'
 					className='flex-1 min-h-0 flex flex-col overflow-hidden data-[state=inactive]:hidden'>
-					{/* Title is NOT repeated here, so no tall space  */}
 					<PreviewSection post={post} />
 				</TabsContent>
 			</Tabs>
