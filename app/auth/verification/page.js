@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
+import dynamic from "next/dynamic"; // Dynamically import for better hydration handling
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,13 +15,22 @@ import { Authentication } from "@/routes/routes";
 import apiCaller from "@/helper/apiCaller";
 import { useToast } from "@/hooks/use-toast";
 
+// 🛠 Wrap the page in Suspense
+const VerificationPage = () => {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
+      <VerificationComponent />
+    </Suspense>
+  );
+};
 
-const Page = () => {
+// 💡 Separate component to use `useSearchParams()`
+const VerificationComponent = () => {
   const [otp, setOtp] = useState(""); // Store OTP as a string
   const [loading, setLoading] = useState(false); 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast(); // Initialize toast for notifications
+  const { toast } = useToast();
 
   const type = searchParams.get("type"); 
   const email = searchParams.get("email"); 
@@ -47,10 +57,8 @@ const Page = () => {
         await apiCaller(Authentication.otpVerification, "POST", { email, otp }, "json");
         toast({ title: "Success", description: "Email verified successfully!" });
 
-        // Redirect user after successful verification
         setTimeout(() => router.push("/"), 1500);
       } else {
-        // Redirect to reset password page if type is not "new"
         router.push(`/auth/reset-password?otp=${otp}&email=${email}`);
       }
     } catch (error) {
@@ -98,4 +106,5 @@ const Page = () => {
   );
 };
 
-export default Page;
+// 📌 Dynamically Import for Better Performance
+export default dynamic(() => Promise.resolve(VerificationPage), { ssr: false });

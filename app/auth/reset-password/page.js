@@ -1,28 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
+import dynamic from "next/dynamic"; // Dynamically import component
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter, useSearchParams } from "next/navigation";
 import apiCaller from "@/helper/apiCaller";
-import { useToast } from "@/components/ui/use-toast"; // Import ShadCN toast
+import { useToast } from "@/hooks/use-toast";
 
+// ✅ Wrap the component inside Suspense
 const ResetPasswordPage = () => {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
+      <ResetPasswordComponent />
+    </Suspense>
+  );
+};
+
+// ✅ Separate Component to use `useSearchParams()`
+const ResetPasswordComponent = () => {
   const [newPassword, setNewPassword] = useState(""); // State for new password
   const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
   const [loading, setLoading] = useState(false); // Loading state for submit
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast(); // Initialize toast
+  const { toast } = useToast();
 
   const otp = searchParams.get("otp");
   const email = searchParams.get("email");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Show loading state
+    setLoading(true);
 
     if (newPassword !== confirmPassword) {
       toast({ title: "Error", description: "Passwords do not match!", variant: "destructive" });
@@ -39,7 +50,6 @@ const ResetPasswordPage = () => {
 
       toast({ title: "Success", description: "Password reset successful! Redirecting..." });
 
-      // Redirect to login page after a short delay
       setTimeout(() => router.push("/auth"), 1500);
     } catch (error) {
       toast({
@@ -48,7 +58,7 @@ const ResetPasswordPage = () => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false); // Hide loading state
+      setLoading(false);
     }
   };
 
@@ -105,4 +115,5 @@ const ResetPasswordPage = () => {
   );
 };
 
-export default ResetPasswordPage;
+// 📌 Dynamically Import for Next.js Optimization
+export default dynamic(() => Promise.resolve(ResetPasswordPage), { ssr: false });
