@@ -16,23 +16,23 @@ import { useRouter } from "next/navigation";
 import apiCaller from "@/helper/apiCaller";
 import { Authentication } from "@/routes/routes";
 import { useToast } from "@/hooks/use-toast";
-
+import Spinner from "../common/Spinner";
 
 
 export function SignupForm({ className, ...props }) {
-  const [username, setUsername] = useState(""); // State for username
-  const [email, setEmail] = useState(""); // State for email
-  const [password, setPassword] = useState(""); // State for password
-  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
-  const [loading, setLoading] = useState(false); // Loading state
+  const [username, setUsername] = useState(""); 
+  const [email, setEmail] = useState(""); 
+  const [password, setPassword] = useState(""); 
+  const [confirmPassword, setConfirmPassword] = useState(""); 
+  const [loading, setLoading] = useState(false); 
   const router = useRouter();
-  const { toast } = useToast(); // Initialize toast
-
+  const { toast } = useToast(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     localStorage.clear();
+
     // Check if passwords match
     if (password !== confirmPassword) {
       toast({
@@ -50,10 +50,9 @@ export function SignupForm({ className, ...props }) {
       formData.append("username", username);
       formData.append("email", email);
       formData.append("password", password);
-      // formData.append("confirmPassword", confirmPassword);
 
       // Call Signup API
-      await apiCaller(Authentication.register, "POST", formData, "multipart",false);
+      await apiCaller(Authentication.register, "POST", formData, "multipart", false);
 
       // Success message
       toast({
@@ -61,7 +60,6 @@ export function SignupForm({ className, ...props }) {
         description: "Signup successful! Redirecting...",
       });
 
-   
       setTimeout(() => router.push(`/auth/verification?type=new&email=${email}`), 1500);
     } catch (error) {
       const errorMessage =
@@ -141,7 +139,7 @@ export function SignupForm({ className, ...props }) {
 
               {/* Submit Button */}
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Signing up..." : "Signup"}
+                {loading ? <Spinner className="w-5 h-5" /> : "Signup"}
               </Button>
             </div>
 

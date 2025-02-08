@@ -22,32 +22,30 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog"; // Import ShadCN Dialog
+} from "@/components/ui/dialog"; 
 import { useToast } from "@/hooks/use-toast";
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+import Spinner from "../common/Spinner";
+
 
 export function LoginForm({ className, ...props }) {
-  const [email, setEmail] = useState(""); // State for email
-  const [password, setPassword] = useState(""); // State for password
-  const [loading, setLoading] = useState(false); // State for loading indicator
-  const [error, setError] = useState(""); // State for handling login errors
-  const [forgotEmail, setForgotEmail] = useState(""); // State for forgot password email
-  const [forgotLoading, setForgotLoading] = useState(false); // State for forgot password loading
+  const [email, setEmail] = useState(""); 
+  const [password, setPassword] = useState(""); 
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(""); 
+  const [forgotEmail, setForgotEmail] = useState(""); 
+  const [forgotLoading, setForgotLoading] = useState(false);
   const router = useRouter();
-  const { toast } = useToast(); // Initialize toast
+  const { toast } = useToast(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Reset error state
+    setError(""); 
     localStorage.clear();
+    
     try {
-      // Call login API
-      const response = await apiCaller(Authentication.login, "POST", {
-        email,
-        password,
-      });
+      const response = await apiCaller(Authentication.login, "POST", { email, password });
 
       localStorage.setItem("accessToken", response.access);
       localStorage.setItem("refreshToken", response.refresh);
@@ -62,20 +60,14 @@ export function LoginForm({ className, ...props }) {
     }
   };
 
-  // Forgot Password Request
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setForgotLoading(true);
 
     try {
-      await apiCaller(Authentication.requestPasswordReset, "POST", {
-        email: forgotEmail,
-      });
+      await apiCaller(Authentication.requestPasswordReset, "POST", { email: forgotEmail });
 
-      toast({
-        title: "Success",
-        description: "OTP has been sent to your email!",
-      });
+      toast({ title: "Success", description: "OTP has been sent to your email!" });
       router.push(`/auth/verification?email=${forgotEmail}&type=forgot`);
     } catch (error) {
       toast({
@@ -88,10 +80,10 @@ export function LoginForm({ className, ...props }) {
     }
   };
 
-
   const handleGoogleLoginSuccess = async (response) => {
+    setLoading(true)
     console.log("Google Login Successful:", response);
-   localStorage.clear();
+    localStorage.clear();
   
     try {
       const res = await apiCaller(Authentication.googleAuth, "POST", { id_token: response.credential });
@@ -108,10 +100,14 @@ export function LoginForm({ className, ...props }) {
       }
     } catch (error) {
       console.error("Error:", error.message || "Google Login failed");
+    
   
       toast({ title: "Error", description: error.message || "Google Login failed", variant: "destructive" });
+    }finally{
+      setLoading(false)
     }
   };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -168,7 +164,7 @@ export function LoginForm({ className, ...props }) {
                           required
                         />
                         <Button type="submit" className="w-full" disabled={forgotLoading}>
-                          {forgotLoading ? "Sending..." : "Send OTP"}
+                          {forgotLoading ? <Spinner className="w-5 h-5" /> : "Send OTP"}
                         </Button>
                       </form>
                     </DialogContent>
@@ -187,18 +183,18 @@ export function LoginForm({ className, ...props }) {
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
               {/* Submit Button */}
+              {loading ? <>
+                <Spinner/>
+              </>:<>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
+                Login
               </Button>
 
               {/* Google Login */}
-              {/* <Button variant="outline" className="w-full">
-                Login with Google
-              </Button> */}
-              <GoogleLogin onSuccess={handleGoogleLoginSuccess} onError={()=>{console.log('Login Failed')}} />
+              <GoogleLogin onSuccess={handleGoogleLoginSuccess} onError={() => console.log('Login Failed')} />
+              </>}
             </div>
 
-            {/* Signup Link */}
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <a href="/auth/signup" className="underline underline-offset-4">
