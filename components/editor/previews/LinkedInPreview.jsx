@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Heart, Repeat2, Send } from "lucide-react";
 import { formatContent } from "@/lib/utils";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export function LinkedInPreview({ post, isMobile }) {
 	const [expanded, setExpanded] = useState(false);
-
+	const {userInfo}= useContext(AuthContext)
 	const content = formatContent(post);
 	const truncatedContent = content.slice(0, 150);
+	const avatarInitial = userInfo?.username?.charAt(0).toUpperCase() || "?";
 
 	const exceedsLimit = content.length > 100;
 
@@ -21,10 +23,10 @@ export function LinkedInPreview({ post, isMobile }) {
 				<div className='flex items-center gap-3'>
 					<Avatar className='h-12 w-12'>
 						<AvatarImage src='/placeholder.svg' />
-						<AvatarFallback>SH</AvatarFallback>
+						<AvatarFallback>{avatarInitial}</AvatarFallback>
 					</Avatar>
 					<div>
-						<h3 className='font-semibold'>SYED MOHAMMAD SAADAAN HASSAN</h3>
+						<h3 className='font-semibold'>{userInfo?.username}</h3>
 						<p className='text-sm text-muted-foreground'>
 							user profile headline
 						</p>
